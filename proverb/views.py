@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Proverb
 from .serializers import ProverbSerializer
@@ -8,7 +7,7 @@ from rest_framework import status
 
 # Create your views here.
 @api_view(['GET', 'POST'])
-def proverb_list(request):
+def proverb_list(request, format=None):
 
     if request.method == 'GET':
         proverbs = Proverb.objects.all()
@@ -20,9 +19,11 @@ def proverb_list(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def proverb_detail(request, id):
+def proverb_detail(request, id, format=None):
     try:
         proverb = Proverb.objects.get(pk=id)
     except Proverb.DoesNotExist:
@@ -32,7 +33,7 @@ def proverb_detail(request, id):
         seriliazer = ProverbSerializer(proverb)
         return JsonResponse(seriliazer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        serializer = ProverbSerializer(proverb,data=request.data)
+        serializer = ProverbSerializer(proverb, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
