@@ -1,4 +1,3 @@
-from django.http import JsonResponse
 from .models import Proverb
 from .serializers import ProverbSerializer
 from rest_framework.decorators import api_view
@@ -12,7 +11,7 @@ def proverb_list(request, format=None):
     if request.method == 'GET':
         proverbs = Proverb.objects.all()
         serializer = ProverbSerializer(proverbs, many=True)
-        return JsonResponse({'proverbs': serializer.data})
+        return Response(serializer.data)
     
     if request.method == 'POST':
         serializer = ProverbSerializer(data=request.data)
@@ -31,7 +30,7 @@ def proverb_detail(request, id, format=None):
     
     if request.method == 'GET':
         seriliazer = ProverbSerializer(proverb)
-        return JsonResponse(seriliazer.data, status=status.HTTP_200_OK)
+        return Response(seriliazer.data, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
         serializer = ProverbSerializer(proverb, data=request.data)
         if serializer.is_valid():
